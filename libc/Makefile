@@ -1,4 +1,4 @@
-DEFAULT_HOST=../default-host.sh
+DEFAULT_HOST!=../default-host.sh
 HOST?=DEFAULT_HOST
 HOSTARCH!=../target-triplet-to-arch.sh $(HOST)
 
@@ -11,10 +11,10 @@ DESTDIR?=
 PREFIX?=/usr/local
 EXEC_PREFIX?=$(PREFIX)
 INCLUDEDIR?=$(PREFIX)/include
-LIBDIR=$(EXEC_PREFIX)/lib
+LIBDIR?=$(EXEC_PREFIX)/lib
 
 CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra
-CPPFLAGS:=$(CPPFLAGS) -D__islibc -Iinclude
+CPPFLAGS:=$(CPPFLAGS) -D__is_libc -Iinclude
 LIBK_CFLAGS:=$(CFLAGS)
 LIBK_CPPFLAGS:=$(CPPFLAGS) -D__is_libk
 
@@ -32,18 +32,7 @@ $(ARCH_FREEOBJS) \
 stdio/printf.o \
 stdio/putchar.o \
 stdio/puts.o \
-stdlib/about.o \
-string/memcmp.o \
-string/memcpy.o \
-string/memmove.o \
-string/memset.o \
-string/strlen.o \
 
-HOSTEDOBJS=\
-$(ARCH_FREEOBJS) \
-stdio/printf.o \
-stdio/putchar.o \
-stdio/puts.o \
 stdlib/abort.o \
 string/memcmp.o \
 string/memcpy.o \
@@ -71,6 +60,9 @@ all: $(BINARIES)
 libc.a: $(OBJS)
 		$(AR) rcs $@ $(OBJS)
 
+libk.a: $(LIBK_OBJS)
+		$(AR) rcs $@ $(LIBK_OBJS)
+
 .c.o:
 		$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS) $(CPPFLAGS)
 
@@ -87,6 +79,8 @@ clean:
 		rm -f $(BINARIES) *.a 
 		rm -f $(OBJS) $(LIBK_OBJS) *.o */*.o */*/*.o
 		rm -f $(OBJS:.o=.d) $(LIBK_OBJS:.o=.d) *.d */*.d */*/*.d
+
+install: install-headers install-libs
 
 install-headers:
 		mkdir -p $(DESTDIR)$(INCLUDEDIR)
