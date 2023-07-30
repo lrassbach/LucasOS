@@ -9,7 +9,8 @@ LIBS?=
 
 DESTDIR?=
 PREFIX?=/usr/local
-EXEC_PREFIX?=$(EXEC_PREFIX)
+EXEC_PREFIX?=$(PREFIX)
+BOOTDIR?=$(EXEC_PREFIX)/boot
 INCLUDEDIR?=$(PREFIX)/include
 
 CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra
@@ -56,7 +57,7 @@ myos.kernel: $(OBJS) $(ARCHDIR)/linker.ld
 		grub-file --is-x86-multiboot myos.kernel
 
 $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
-		OBJ=`$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=$(@F)` $$ cp "$$OBJ" $@
+		OBJ=`$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=$(@F)` && cp "$$OBJ" $@
 
 .c.o:
 		$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS) $(CPPFLAGS)
