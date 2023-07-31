@@ -12,7 +12,7 @@ export PREFIX=/usr
 export EXEC_PREFIX=$PREFIX
 export BOOTDIR=/boot
 export LIBDIR=$EXEC_PREFIX/lib
-export INCLUDEDDIR=$PREFIX/include
+export INCLUDEDIR=$PREFIX/include
 
 export CFLAGS='-O2 -g'
 export CPPFLAGS=''
